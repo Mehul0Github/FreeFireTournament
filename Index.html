@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Fire Tournament Registration</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            padding: 20px;
+        }
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            margin: auto;
+        }
+        h2 {
+            text-align: center;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            background-color: #28a745;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            width: 100%;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        .confirmation-message {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #d4edda;
+            color: #155724;
+            border-radius: 5px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Free Fire Tournament Registration</h2>
+        <form id="registrationForm">
+            <div class="form-group">
+                <label for="name">Name</label>
+                <input type="text" id="name" placeholder="Enter your full name" required>
+            </div>
+            <div class="form-group">
+                <label for="ffid">Free Fire ID</label>
+                <input type="text" id="ffid" placeholder="Enter your Free Fire ID" required>
+            </div>
+            <div class="form-group">
+                <label for="whatsapp">WhatsApp Number</label>
+                <input type="tel" id="whatsapp" placeholder="Enter your WhatsApp number" required>
+            </div>
+            <div class="form-group">
+                <label for="payment">Payment Option</label>
+                <select id="payment" required>
+                    <option value="" disabled selected>Select Payment Option</option>
+                    <option value="paypal">PayPal</option>
+                    <option value="card">Credit/Debit Card</option>
+                    <option value="upi">UPI</option>
+                </select>
+            </div>
+            <button type="submit">Submit</button>
+        </form>
+        
+        <div class="confirmation-message" id="confirmationMessage"></div>
+    </div>
+
+    <!-- Firebase Integration -->
+    <script type="module">
+        // Import Firebase and Firestore
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-analytics.js";
+        import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";
+
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyA_TCuR7qO_AtLlIj2RMde_kLw0de37-po",
+            authDomain: "freefiretournament-df7bc.firebaseapp.com",
+            projectId: "freefiretournament-df7bc",
+            storageBucket: "freefiretournament-df7bc.appspot.com",
+            messagingSenderId: "521911718910",
+            appId: "1:521911718910:web:8d9a72a8a237322f0066af",
+            measurementId: "G-N31QKGXNDZ"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+
+        // Initialize Firestore
+        const db = getFirestore(app);
+
+        // Form and confirmation handling
+        const form = document.getElementById('registrationForm');
+        const confirmationMessage = document.getElementById('confirmationMessage');
+
+        form.addEventListener('submit', async function(event) {
+            event.preventDefault();
+
+            // Get form data
+            const name = document.getElementById('name').value;
+            const ffid = document.getElementById('ffid').value;
+            const whatsapp = document.getElementById('whatsapp').value;
+            const payment = document.getElementById('payment').value;
+
+            // Save the form data to Firestore
+            try {
+                await addDoc(collection(db, "registrations"), {
+                    name: name,
+                    ffid: ffid,
+                    whatsapp: whatsapp,
+                    payment: payment,
+                    timestamp: new Date()
+                });
+
+                // Show confirmation message
+                confirmationMessage.style.display = 'block';
+                confirmationMessage.innerHTML = `
+                    <strong>Registration Successful!</strong><br>
+                    Name: ${name}<br>
+                    Free Fire ID: ${ffid}<br>
+                    WhatsApp Number: ${whatsapp}<br>
+                    Payment Method: ${payment}<br>
+                    <strong>Payment Receipt:</strong> Your payment via ${payment} has been received.
+                `;
+
+                // Clear form fields after submission
+                form.reset();
+
+            } catch (e) {
+                console.error("Error adding document: ", e);
+                confirmationMessage.style.display = 'block';
+                confirmationMessage.style.backgroundColor = '#f8d7da';
+                confirmationMessage.style.color = '#721c24';
+                confirmationMessage.innerHTML = "Error submitting the form. Please try again.";
+            }
+        });
+    </script>
+</body>
+  </html>
