@@ -157,8 +157,28 @@
                 confirmationMessage.innerHTML = "Error submitting the form. Please try again.";
             }
         });
+
+
+
+
+import { SquidService, secureCollection } from '@squidcloud/backend';
+import { QueryContext } from '@squidcloud/client';
+
+type User = { id: string; email: string; age: number };
+
+export class ExampleService extends SquidService {
+  @secureCollection('users', 'read')
+  async secureUsersRead(context: QueryContext<User>): Promise<boolean> {
+    return this.isAuthenticated();
+  }
+}
+
+
+
+
+
+
     </script>
-npx @squidcloud/cli init ff-tournament-app-backend --appId 7ex4tk69nmzsf8qpcu --apiKey 41bad64b-edc7-4bae-b445-919540cbd0c6 --environmentId dev --squidDeveloperId qh1p97so9zktevybc7 --region us-central1.gcp
 
 </body>
   </html>
