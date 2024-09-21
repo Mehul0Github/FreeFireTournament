@@ -158,26 +158,6 @@
             }
         });
 
-
-
-
-import { SquidService, secureCollection } from '@squidcloud/backend';
-import { QueryContext } from '@squidcloud/client';
-
-type User = { id: string; email: string; age: number };
-
-export class ExampleService extends SquidService {
-  @secureCollection('users', 'read')
-  async secureUsersRead(context: QueryContext<User>): Promise<boolean> {
-    return this.isAuthenticated();
-  }
-}
-
-
-
-
-
-
     </script>
 
 </body>
